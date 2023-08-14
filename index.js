@@ -19,14 +19,15 @@ app.use(corsMiddleware);
 app.use(rateLimitMiddleware);
 app.use(json());
 app.use(urlencoded({ extended: true }));
-
+let model = 'default'
+if(MANCERMODEL === 'weaver-alpha') model = 'Experimental Model'
+else if (MANCERMODEL === 'oa-orca') model = 'OpenAssistant ORCA'
+else if (MANCERMODEL === 'wizvic') model = 'Wizard Vicuna SuperHOT'
 // Register routes
 app.all("/", async function (req, res) {
   res.set("Content-Type", "application/json");
-  let model = ''
-  if(MANCERMODEL === 'weaver-alpha') model = 'Experimental Model'
-  else if (MANCERMODEL === 'oa-orca') model = 'OpenAssistant ORCA'
-  else if (MANCERMODEL === 'wizvic') model = 'Wizard Vicuna SuperHOT'
+
+
 
   return res.status(200).json({
     status: true,
@@ -38,6 +39,10 @@ app.all("/", async function (req, res) {
 });
 let baselink = 'http://localhost:3000'
 
+app.get("/api/v1/model", (req, res) => {
+  res.send({"result": model})
+});
+
 const { url, connections, child, stop } = tunnel({
   "--url": `localhost:${SERVER_PORT}`,
 });
@@ -45,8 +50,13 @@ baselink = await url;
 
 app.post("/api/v1/generate", mancer_generate);
 
+
+
+
 console.log(`\nProxy is running on PORT ${SERVER_PORT} ...`);
-console.log(`proxy url: ${baselink}`)
+console.log(`\nLocal url:  http://localhost:${SERVER_PORT}`);
+
+console.log(`Proxy url: ${baselink}`)
 // Start server
 app.listen(SERVER_PORT, () => {
   //   console.log(`Proxy is running on PORT ${SERVER_PORT} ...`);

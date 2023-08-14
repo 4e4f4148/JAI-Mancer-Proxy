@@ -7,12 +7,12 @@ async function convertJAIkotoMancer(body) {
     "max_new_tokens": body.max_length === 0 ? 1000 : body.max_length,
     "do_sample": true,
     "temperature": body.temperature,
-    "top_p": 0.9,
-    "typical_p": 1,
+    "top_p": body.top_p || 0.9,
+    "typical_p": body.typical_p || 0.9,
     "repetition_penalty": body.rep_pen,
     "repetition_penalty_range": 0,
     "encoder_repetition_penalty": 0.9,
-    "top_k": 0,
+    "top_k": body.top_k || 0,
     "min_length": 0,
     "no_repeat_ngram_size": 0,
     "num_beams": 1,
@@ -27,8 +27,8 @@ async function convertJAIkotoMancer(body) {
     "truncation_length": body.max_context_length,
     "ban_eos_token": false,
     "skip_special_tokens": true,
-    "top_a": 0,
-    "tfs": 1,
+    "top_a": body.top_a || 0,
+    "tfs": body.tfs || 1,
     "epsilon_cutoff": 0,
     "eta_cutoff": 0,
     "mirostat_mode": 0,
@@ -36,6 +36,7 @@ async function convertJAIkotoMancer(body) {
     "mirostat_eta": 0.1,
     "use_mancer": true
   }
+  // console.log(mancerformat)
   return mancerformat
 }
 
@@ -55,6 +56,7 @@ async function postAsync(url, args, header) {
 
 async function mancer_generate(request, response_generate = response) {
   if (!request.body) return response_generate.sendStatus(400);
+  console.log("generating text...")
   var start = Date.now();
   // code
 
