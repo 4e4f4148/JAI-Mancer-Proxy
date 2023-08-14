@@ -1,9 +1,9 @@
 import express, { json, urlencoded } from "express";
 
 import { mancer_generate } from "./driverroutes.js";
-import { corsMiddleware, rateLimitMiddleware } from "./middlewares.js";
+import { corsMiddleware } from "./middlewares.js";
 
-import { DEBUG, SERVER_PORT, MANCERMODEL } from "./config.js";
+import { DEBUG, SERVER_PORT, MANCERURL } from "./config.js";
 import { tunnel } from "cloudflared";
 
 
@@ -16,13 +16,20 @@ let app = express();
 
 // Middlewares
 app.use(corsMiddleware);
-app.use(rateLimitMiddleware);
 app.use(json());
 app.use(urlencoded({ extended: true }));
+let modeldump = 'default'
+if (MANCERURL !== "paste your mancer url here") {
+  modeldump = MANCERURL.split('/')[4]
+}
 let model = 'default'
-if(MANCERMODEL === 'weaver-alpha') model = 'Experimental Model'
-else if (MANCERMODEL === 'oa-orca') model = 'OpenAssistant ORCA'
-else if (MANCERMODEL === 'wizvic') model = 'Wizard Vicuna SuperHOT'
+
+if(modeldump === 'weaver-alpha') model = 'Experimental Model'
+else if (modeldump === 'mythomax') model = 'MythoMax'
+else if (modeldump === 'oa-orca') model = 'OpenAssistant ORCA'
+else if (modeldump === 'wizvic') model = 'Wizard Vicuna SuperHOT'
+
+console.log(`Model: ${model}`)
 // Register routes
 app.all("/", async function (req, res) {
   res.set("Content-Type", "application/json");

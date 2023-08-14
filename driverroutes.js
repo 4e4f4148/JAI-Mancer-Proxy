@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MANCERKEY, MANCERMODEL } from "./config.js";
+import { MANCERKEY, MANCERURL } from "./config.js";
 
 async function convertJAIkotoMancer(body) {
   let mancerformat = {
@@ -60,7 +60,6 @@ async function mancer_generate(request, response_generate = response) {
   var start = Date.now();
   // code
 
-  let MANCERURL = `https://neuro.mancer.tech/webui/${MANCERMODEL}/api`;
   let config = {
     headers: {
       "X-API-KEY": MANCERKEY,
